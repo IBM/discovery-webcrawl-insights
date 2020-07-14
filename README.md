@@ -2,7 +2,7 @@
 
 There is a lot of information on the web, and we are always interested in getting the relevant information. The below two scenarios drive the need for it:
 - There is usually a specific item of interest, and we try to get all the relevant infomration about the item. 
-- We have a question and are searching to finding the answers for it which is in one of the web pages. 
+- We have a question and are searching to find the answers for it that is in the web pages. 
 
 In this code pattern, we try to address a specific scenario where we try to query for relevant information from a group of web pages. [IBM Discovery service](https://cloud.ibm.com/docs/discovery?topic=discovery-about) provides the ability to crawl through web pages and build a queryable collection. We will use this feature to build an application using which you can:
 - Specify a list of URLs that `Discovery` will crawl to build the collection.
