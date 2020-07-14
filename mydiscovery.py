@@ -24,11 +24,10 @@ if 'VCAP_SERVICES' in os.environ:
         creds = vcap['discovery'][0]['credentials']
         apikey = creds['apikey']
         service_url = creds['url']
-elif os.path.isfile('vcap-local.json'):
-    with open('vcap-local.json') as f:
-        logging.warning('Reading from vcap-local.json file...')
-        vcap = json.load(f)
-        creds = vcap['discovery'][0]['credentials']
+elif os.path.isfile('credentials.json'):
+    with open('credentials.json') as f:
+        logging.warning('Reading from credentials.json file...')
+        creds = json.load(f)
         apikey = creds['apikey']
         service_url = creds['url']
 
