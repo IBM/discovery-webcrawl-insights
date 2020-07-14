@@ -18,7 +18,7 @@ When you have completed this code pattern, you will understand how to:
 
 ## Flow
 
-![architecture](doc/source/images/architecture.png)
+![architecture](images/architecture.png)
 
 ## Prerequisites
 
