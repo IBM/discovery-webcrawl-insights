@@ -28,6 +28,8 @@ When you have completed this code pattern, you will understand how to:
 ## Prerequisites
 
 - [IBM Cloud account](https://cloud.ibm.com)
+- [Install IBM Cloud CLI](https://cloud.ibm.com/docs/cli?topic=cli-install-ibmcloud-cli)
+- [Python](https://www.python.org/downloads/)
 
 ## Steps
 
@@ -38,10 +40,54 @@ When you have completed this code pattern, you will understand how to:
 
 ## 1. Clone the repo
 
+Open a terminal and run the below command to clone the repo.
+
+```
+git clone https://github.com/IBM/discovery-webcrawl-insights
+```
+This will create a folder `discovery-webcrawl-insights`.
+
 ## 2. Create an instance of the Discovery Service
+
+Click [here](https://cloud.ibm.com/catalog/services/discovery) to create an instance of the `Discovery` service.
+
+Select a region and pricing plan. Click `Create`.
+
+![Create Discovery](images/create_discovery.png)
+
+>Note: The below step is need if you are deploying the application locally. Skip the below step if you are deploying the application to the cloud.
+Once the service is provisioned, open the service page and click on `Service credentials`. Click on `Copy` icon to copy the credentials.
+Go to the repo folder `discovery-webcrawl-insights`, edit the file `credentials.json` and replace content with new credentials you copied.
+
+![Copy credentials](images/copy_credentials.png)
 
 ## 3. Deploy the application
 
+### Deploy the application locally
+  
+You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
+
+Install the dependencies listed in the requirements.txt file to be able to run the app locally. Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
+```
+pip install -r requirements.txt
+```
+Run the application with the below command:
+```
+python mydiscovery.py
+```
+The application can be accessed at http://localhost:8000.
+
+![Home](images/homepage.png)
+
+### Deploy the application on IBM Cloud
+
+Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
+
+```
+ibmcloud cf push
+```
+
+Once the application is deployed and running fine, go to the IBM Cloud Dashboard. 
 ## 4. Analyze the results
 
 ## License
