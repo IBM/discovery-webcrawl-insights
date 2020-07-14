@@ -1,0 +1,69 @@
+.bx--search {
+    margin:10px;
+}
+
+em {
+    background-color: yellow;
+}
+
+hr {
+    color: rgb(221, 219, 219);
+}
+
+h5 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+    letter-spacing: 0;
+}
+
+h4 {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.625rem;
+    letter-spacing: 0;
+}
+
+h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.625rem;
+    letter-spacing: 0;
+}
+
+text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    shape-padding: 2px;
+}
+
+.bx--accordion__content {
+    font-size: 0.75rem;
+}
+
+p {
+    text-align: justify;
+    font-size: 1rem;
+}
+
+table {
+    width:100%;
+}
+
+tr {
+    width:100%;
+}
+
+td {
+    width:50%;
+    vertical-align:middle;
+    padding:3px;
+}
+
+.alink {
+    background-color: rgb(75, 143, 189);  
+    border-radius: 5px;
+    color: white;
+    padding: .5em;
+    text-decoration: none;
+}

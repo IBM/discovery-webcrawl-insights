@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Visualize insights</title>
+    <link rel="stylesheet" type="text/css" href="static/css/carbon-components.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/custom.css">
+    <link rel="stylesheet" type="text/css" href="static/css/style.min.css">
+    <script type="text/javascript" src="static/js/eventhandlers.js"></script>
+    <script type="text/javascript" src="static/js/demo.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@carbon/charts@0.30.10/bundle.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-cloud/1.2.5/d3.layout.cloud.min.js"></script>
+</head>
+
+<body>
+    <h1>Retrieve and visualize relevant information from collection of web portals</h1>
+    <h2>(Create a collection, Delete a collection, Check collection status, Query using natural language to get relevant
+        documents and passages!)</h2>
+    <br />
+    <table>
+        <tr>
+            <td style="vertical-align:top;">
+                <form id="createcollection" action="/createcollection" method="POST">
+                    <div class="example-input-button-pairing">
+                        <div class="bx--form-item">
+                            <input id="name" name="name" type="text" class="bx--text-input" placeholder="Enter a name">
+                            <input id="urls" name="urls" type="text" class="bx--text-input"
+                                placeholder="Enter URLs comma separated">
+                        </div>
+                        <div class="example-button-wrapper" style="padding:2px;">
+                            <button class=" bx--btn bx--btn--primary bx--btn--field" form="createcollection"
+                                type="submit">
+                                Create collection
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td style="vertical-align:top;padding-left:75px;">
+                <div class="example-button-wrapper" style="padding:2px;">
+                    <form id="statuscollection" action="/getstatus" method="GET">
+                        <button class=" bx--btn bx--btn--primary bx--btn--field" form="statuscollection" type="submit">
+                            Get Collection Status
+                        </button>
+                    </form>
+                </div>
+                <form id="deletecollection" action="/deletecollections" method="GET">
+                    <div class="example-button-wrapper" style="padding:2px;">
+                        <button class=" bx--btn bx--btn--primary bx--btn--field" form="deletecollection" type="submit">
+                            Delete the collection
+                        </button>
+                    </div>
+                </form>
+            </td>
+            <td style="vertical-align:top;text-align:center;">
+                <div data-notification
+                    class="bx--toast-notification bx--toast-notification--warning bx--toast-notification--low-contrast"
+                    role="alert">
+                    <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+                        xmlns="http://www.w3.org/2000/svg" class="bx--toast-notification__icon" width="20" height="20"
+                        viewBox="0 0 20 20" aria-hidden="true">
+                        <path
+                            d="M10,1c-5,0-9,4-9,9s4,9,9,9s9-4,9-9S15,1,10,1z M9.2,5h1.5v7H9.2V5z M10,16c-0.6,0-1-0.4-1-1s0.4-1,1-1	s1,0.4,1,1S10.6,16,10,16z">
+                        </path>
+                        <path d="M9.2,5h1.5v7H9.2V5z M10,16c-0.6,0-1-0.4-1-1s0.4-1,1-1s1,0.4,1,1S10.6,16,10,16z"
+                            data-icon-path="inner-path" opacity="0"></path>
+                    </svg>
+                    <div class="bx--toast-notification__details">
+                        <h3 class="bx--toast-notification__title">{{msg.title}}</h3>
+                        <p class="bx--toast-notification__subtitle">{{msg.subtitle}}</p>
+                        <p class="bx--toast-notification__caption">{{msg.time}}</p>
+                    </div>
+                    <button data-notification-btn class="bx--toast-notification__close-button" type="button"
+                        aria-label="close">
+                        <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+                            xmlns="http://www.w3.org/2000/svg" class="bx--toast-notification__close-icon" width="20"
+                            height="20" viewBox="0 0 32 32" aria-hidden="true">
+                            <path
+                                d="M24 9.4L22.6 8 16 14.6 9.4 8 8 9.4 14.6 16 8 22.6 9.4 24 16 17.4 22.6 24 24 22.6 17.4 16 24 9.4z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+            </td>
+
+
+        </tr>
+
+    </table>
+
+
+
+
+    <table>
+        <tr>
+            <td>
+                <div>
+                    <h2 style="text-align: center;">Ask your query</h2>
+                </div>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <br />
+        <br />
+        <tr>
+            <td>
+                <form action="/query" method="POST">
+                    <div class="bx--form-item">
+                        <div data-search role="search" class="bx--search bx--search--sm">
+                            <label id="search-input-label-1" class="bx--label" for="search__input-1">{{search}}</label>
+                            <input class="bx--search-input" type="text" name="search" id="search__input-1"
+                                placeholder="{{search}}">
+                            <svg focusable="false" preserveAspectRatio="xMidYMid meet" style="will-change: transform;"
+                                xmlns="http://www.w3.org/2000/svg" class="bx--search-magnifier" width="16" height="16"
+                                viewBox="0 0 16 16" aria-hidden="true">
+                                <path
+                                    d="M15,14.3L10.7,10c1.9-2.3,1.6-5.8-0.7-7.7S4.2,0.7,2.3,3S0.7,8.8,3,10.7c2,1.7,5,1.7,7,0l4.3,4.3L15,14.3z M2,6.5	C2,4,4,2,6.5,2S11,4,11,6.5S9,11,6.5,11S2,9,2,6.5z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                </form>
+            </td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div data-content-switcher class="bx--content-switcher" role="tablist" aria-label="Switch content">
+                    <button id="matchingbutton" class="bx--content-switcher-btn bx--content-switcher--selected"
+                        data-target=".demo--panel--opt-1" role="tab" aria-selected="true" onclick="changeSection(this)">
+                        <span class="bx--content-switcher__label">Top 5 matching documents with highlights</span>
+                    </button>
+                    <button id="passagesbutton" class="bx--content-switcher-btn" data-target=".demo--panel--opt-2"
+                        role="tab" onclick="changeSection(this)">
+                        <span class="bx--content-switcher__label">Top 5 relevant passages</span>
+                    </button>
+                </div>
+            </td>
+            <td align="center" style="background-color: #f4f4f4;">
+                <h4></h4>
+            </td>
+        </tr>
+
+        <!-- Passages -->
+        <tr>
+            <td style="vertical-align: top;">
+                <span id="passages">
+                    <ul data-accordion class="bx--accordion">
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane1">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title">
+                                    <h5 id="passage1title">No result</h5>
+                                </div>
+                            </button>
+                            <div id="pane1" class="bx--accordion__content">
+                                <p id="passage1content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane2">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="passage2title">No result</div>
+                            </button>
+                            <div id="pane2" class="bx--accordion__content">
+                                <p id="passage2content">content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane3">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="passage3title">No result</div>
+                            </button>
+                            <div id="pane3" class="bx--accordion__content">
+                                <p id="passage3content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane4">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="passage4title">No result</div>
+                            </button>
+                            <div id="pane4" class="bx--accordion__content">
+                                <p id="passage4content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" aria-controls="pane4">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="passage5title">No result</div>
+                            </button>
+                            <div id="pane5" class="bx--accordion__content">
+                                <p id="passage5content">Content</p>
+                            </div>
+                        </li>
+                    </ul>
+                </span>
+
+                <!-- Matching documents -->
+                <span id="matching">
+                    <ul data-accordion class="bx--accordion">
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" id="m0" aria-expanded="false"
+                                onclick="buildWordCloud(0)" aria-controls="pane1">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title">
+                                    <h4 id="matching1title">No result</h4>
+                                </div>
+                            </button>
+                            <div id="pane1" class="bx--accordion__content">
+                                <p id="matching1content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" id="m1" aria-expanded="false"
+                                onclick="buildWordCloud(1)" aria-controls="pane2">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="matching2title">No result</div>
+                            </button>
+                            <div id="pane2" class="bx--accordion__content">
+                                <p id="matching2content">content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" id="m2" aria-expanded="false"
+                                onclick="buildWordCloud(2)" aria-controls="pane3">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="matching3title">No result</div>
+                            </button>
+                            <div id="pane3" class="bx--accordion__content">
+                                <p id="matching3content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" id="m3"
+                                onclick="buildWordCloud(3)" aria-controls="pane4">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="matching4title">No result</div>
+                            </button>
+                            <div id="pane4" class="bx--accordion__content">
+                                <p id="matching4content">Content</p>
+                            </div>
+                        </li>
+                        <li data-accordion-item class="bx--accordion__item">
+                            <button class="bx--accordion__heading" aria-expanded="false" id="m4"
+                                onclick="buildWordCloud(4)" aria-controls="pane4">
+                                <svg focusable="false" preserveAspectRatio="xMidYMid meet"
+                                    style="will-change: transform;" xmlns="http://www.w3.org/2000/svg"
+                                    class="bx--accordion__arrow" width="16" height="16" viewBox="0 0 16 16"
+                                    aria-hidden="true">
+                                    <path d="M11 8L6 13 5.3 12.3 9.6 8 5.3 3.7 6 3z"></path>
+                                </svg>
+                                <div class="bx--accordion__title" id="matching5title">No result</div>
+                            </button>
+                            <div id="pane5" class="bx--accordion__content">
+                                <p id="matching5content">Content</p>
+                            </div>
+                        </li>
+                    </ul>
+                </span>
+            </td>
+            <td align="center" style="vertical-align:top;" colspan="2">
+                <div id="wordcloud" style="width:400px;margin:5px;height:400px;padding:25px;border:1px;">
+                </div>
+                <div id="charttitle" style="text-align: center;"></div>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+        </tr>
+    </table>
+    <div>
+        <input type="hidden" id="results" value="{{results}}" name="results" />
+    </div>
+    <script>
+        populateResults();
+        words = [];
+        titleElement = document.getElementById("charttitle");
+
+        function draw(words) {
+            d3.selectAll("svg").remove();
+            grp = d3.select("#wordcloud").append("svg")
+                .attr("width", 400)
+                .attr("height", 400)
+                .style("background-color", "white")
+                .append("g")
+                .attr("transform", "translate(150,150)");
+            grp.append("circle")
+                .attr("cx", 25)
+                .attr("cy", 25)
+                .attr("r", 175)
+                .style("fill", "black");
+            grp.selectAll("text")
+                .data(words)
+                .enter().append("text")
+                .style("font-size", function (d) { return d.size + "px"; })
+                .style("font-family", "Arial")
+                .style("fill", "lightblue")
+                .attr("text-anchor", "middle")
+                .attr("transform", function (d) {
+                    return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                })
+                .text(function (d) { return d.text; });
+        }
+
+        function buildWords(ent) {
+            words.push(formatWord(ent));
+        }
+
+        function buildWordCloud(index) {
+            if (document.getElementById("m" + index).getAttribute("aria-expanded") == "true") {
+                d3.selectAll("svg").remove();
+                titleElement.innerHTML = "";
+                return;
+            }
+            results = JSON.parse(document.getElementById("results").value);
+            titleElement = document.getElementById("charttitle");
+            titleElement.innerHTML = '<a class="alink" href=' + results["results"][index]["metadata"]["source"]["url"] + '>Open Document</a>';
+
+            entities = results["results"][index]["enriched_text"]["entities"];
+            words = []
+            entities.forEach(buildWords);
+
+            d3.layout.cloud()
+                .size([300, 300])
+                .words(words
+                    .map(function (d) {
+                        return { text: d[0], size: d[1] * 50 };
+                    }))
+                .padding(5)
+                .rotate(function () { return ~~(Math.random() * 0) * 90; })
+                .font("Impact")
+                .fontSize(function (d) { return d.size; })
+                .on("end", draw)
+                .start();
+        }
+
+        function formatWord(word) {
+            formattedWord = [];
+            formattedWord.push(word["text"]);
+            formattedWord.push(word["relevance"]);
+            return formattedWord;
+        }
+
+
+    </script>
+</body>
+
+</html>

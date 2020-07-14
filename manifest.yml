@@ -1,0 +1,6 @@
+---
+applications:
+ - name: customcollections
+   random-route: true
+   memory: 512M
+   buildpack: python_buildpack
