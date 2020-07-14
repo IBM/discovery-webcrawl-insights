@@ -1,5 +1,7 @@
 # Retrieve relevant information from a collection of web portals and visualize them
 
+There is a lot of information on the web, and we are always interested in getting the relevant information. In this code pattern, we try to address a specific scenario where we try to get relevant information from a group of web pages. 
+
 ## Flow
 
 ![architecture](doc/source/images/architecture.png)
