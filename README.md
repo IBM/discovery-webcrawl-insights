@@ -20,7 +20,14 @@ When you have completed this code pattern, you will understand how to:
 
 ![architecture](images/architecture.png)
 
+1. User requests for creation/status/deletion of a collection or queries a collection through a custom built web UI.
+2. The request is sent to a server application on the cloud.
+3. The application invokes an api on the Discovery service using the Watson SDK.
+4. The Discovery service processes the results and sends it back to the User.
+
 ## Prerequisites
+
+- [IBM Cloud account](https://cloud.ibm.com)
 
 ## Steps
 
