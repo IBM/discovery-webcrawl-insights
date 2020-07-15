@@ -35,7 +35,7 @@ When you have completed this code pattern, you will understand how to:
 
 1. [Clone the repo](#1-clone-the-repo)
 1. [Deploy the application](#2-deploy-the-application)
-1. [analyze-the-results](#3-analyze-the-results)
+1. [Analyze the results](#3-analyze-the-results)
 
 ## 1. Clone the repo
 
