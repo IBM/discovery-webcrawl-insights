@@ -34,16 +34,17 @@ There is a lot of information on the web, and we are always interested in gettin
 - We have a question and are searching to find the answers for it that is in the web pages.
 
 In this code pattern, we try to address a specific scenario where we try to query for relevant information from a group of web pages. IBM Discovery service provides the ability to crawl through web pages and build a queryable collection. We will use this feature to build an application using which you can:
-- Specify a list of URLs that Discovery will crawl to build the collection.
-- Specify a query in natural language and get relevant results with insights from Discovery.
-- Visualize the information
+- Specify a list of URLs that `Discovery` will crawl to build the collection.
+- Specify a query in `natural language` and get relevant results with insights from `Discovery`.
+- Visualize the top five matching documents, passages and entities for the query
 
 When you have completed this code pattern, you will understand how to:
-- Use the Discovery APIs -
+- Use the `Discovery` APIs -
   - to create a collection using webcrawl.
   - to get the status of a collection.
+  - to query the collection using natural language
   - to delete a collection.
-  - Parse, read and visualize the results from Discovery.
+- Parse, read and visualize the results from `Discovery`.
 
 
 # Flow
