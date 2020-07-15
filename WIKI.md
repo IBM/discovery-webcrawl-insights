@@ -21,7 +21,7 @@ Retrieve and visualize relevant information from a collection of web portals wit
 
 # Summary
 
-In this code pattern, we build an application that uses the APIs of IBM Discovery service to create, query, get status and delete a document collection of web portals. The application renders the query results on a custom built web user interface. This provides flexibility to the end-user to design and build the web user interface for specific information and visualization requirements. 
+In this code pattern, we build an application that uses the APIs of IBM Discovery service to create, query, get status and delete a document collection of web portals. The application renders the query results on a custom built web user interface. This provides flexibility for the end-user to design and build the web user interface to suit specific information and visualization requirements. 
 
 # Technologies
 
