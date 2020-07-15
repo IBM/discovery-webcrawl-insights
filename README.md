@@ -35,9 +35,8 @@ When you have completed this code pattern, you will understand how to:
 ## Steps
 
 1. [Clone the repo](#1-clone-the-repo)
-1. [Create an instance of the Discovery Service](#2-create-an-instance-of-the-discovery-service)
-1. [Deploy the application](#3-deploy-the-application)
-1. [analyze-the-results](#4-analyze-the-results)
+1. [Deploy the application](#2-deploy-the-application)
+1. [analyze-the-results](#3-analyze-the-results)
 
 ## 1. Clone the repo
 
@@ -48,7 +47,9 @@ git clone https://github.com/IBM/discovery-webcrawl-insights
 ```
 This will create a folder `discovery-webcrawl-insights`.
 
-## 2. Create an instance of the Discovery Service
+## 3. Deploy the application
+
+### Deploy the application locally
 
 Click [here](https://cloud.ibm.com/catalog/services/discovery) to create an instance of the `Discovery` service.
 
@@ -62,10 +63,6 @@ Go to the repo folder `discovery-webcrawl-insights`, edit the file `credentials.
 
 ![Copy credentials](images/copy_credentials.png)
 
-## 3. Deploy the application
-
-### Deploy the application locally
-  
 You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
 
 Install the dependencies listed in the requirements.txt file to be able to run the app locally. Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
@@ -82,10 +79,13 @@ The application can be accessed at http://localhost:8000.
 
 ### Deploy the application on IBM Cloud
 
-Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
+Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below commands.
 
 ```
-ibmcloud cf push
+$ ibmcloud cf create-service discovery lite mydiscoveryservice
+$ ibmcloud cf push
+$ ibmcloud cf bind-service customcollections mydiscoveryservice
+$ ibmcloud cf restage customcollections
 ```
 
 Once the application is deployed and running fine, go to the IBM Cloud Dashboard. 
@@ -104,7 +104,7 @@ Click on `Visit App URL` to access the application.
 
 ## 4. Analyze the results
 
-You can now go ahead and create a collection. Let us take the `IBM Developer portal`and create collection.
+You can now go ahead and create a collection. 
 
 
 ## License
