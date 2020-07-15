@@ -1,10 +1,10 @@
 # Short title
 
-Aggregate and query information from web portals
+Aggregate and query information from web portals using IBM Discovery service
 
 # Long title
 
-Retrieve and visualize relevant information from a collection of web portals with a natural language query
+Retrieve and visualize relevant information from a collection of web portals with a natural language query using IBM Discovery service
 
 # Author
 
@@ -48,6 +48,9 @@ When you have completed this code pattern, you will understand how to:
 
 
 # Flow
+
+![architecture](images/architecture.png)
+
 1. User requests for creation/status/deletion of a collection or queries a collection through a custom built web UI.
 2. The request is sent to a server application on the cloud.
 3. The application invokes an api on the Discovery service using the Watson SDK.
