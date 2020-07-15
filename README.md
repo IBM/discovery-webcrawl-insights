@@ -1,4 +1,3 @@
-## Work in progress
 # Retrieve relevant information from a collection of web portals and visualize them
 
 There is a lot of information on the web, and we are always interested in getting the relevant information. The below two common scenarios drive the need for it:
@@ -35,9 +34,8 @@ When you have completed this code pattern, you will understand how to:
 ## Steps
 
 1. [Clone the repo](#1-clone-the-repo)
-1. [Create an instance of the Discovery Service](#2-create-an-instance-of-the-discovery-service)
-1. [Deploy the application](#3-deploy-the-application)
-1. [analyze-the-results](#4-analyze-the-results)
+1. [Deploy the application](#2-deploy-the-application)
+1. [analyze-the-results](#3-analyze-the-results)
 
 ## 1. Clone the repo
 
@@ -48,7 +46,9 @@ git clone https://github.com/IBM/discovery-webcrawl-insights
 ```
 This will create a folder `discovery-webcrawl-insights`.
 
-## 2. Create an instance of the Discovery Service
+## 3. Deploy the application
+
+### Deploy the application locally
 
 Click [here](https://cloud.ibm.com/catalog/services/discovery) to create an instance of the `Discovery` service.
 
@@ -62,10 +62,6 @@ Go to the repo folder `discovery-webcrawl-insights`, edit the file `credentials.
 
 ![Copy credentials](images/copy_credentials.png)
 
-## 3. Deploy the application
-
-### Deploy the application locally
-  
 You can optionally use a [virtual environment](https://packaging.python.org/installing/#creating-and-using-virtual-environments) to avoid having these dependencies clash with those of other Python projects or your operating system.
 
 Install the dependencies listed in the requirements.txt file to be able to run the app locally. Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
@@ -78,33 +74,42 @@ python mydiscovery.py
 ```
 The application can be accessed at http://localhost:8000.
 
-![Home](images/homepage.png)
-
 ### Deploy the application on IBM Cloud
 
-Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below command.
+Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below commands.
 
 ```
-ibmcloud cf push
+$ ibmcloud cf create-service discovery lite mydiscoveryservice
+$ ibmcloud cf push
+$ ibmcloud cf bind-service customcollections mydiscoveryservice
+$ ibmcloud cf restage customcollections
 ```
 
 Once the application is deployed and running fine, go to the IBM Cloud Dashboard. 
-
-On the application dashboard, select `Connections`. Click on `Create connection`.
-![Select connections](images/select_create_conn.png)
-
-Choose the `Discovery service` you created earlier.
-![Choose service](images/choose_service.png)
-
-Create the connection. The application must be re-staged after that.
-![Create connection](images/create_connection.png)
 
 Click on `Visit App URL` to access the application.
 ![Open App](images/open_app.png)
 
 ## 4. Analyze the results
 
-You can now go ahead and create a collection. Let us take the `IBM Developer portal`and create collection.
+The application is ready. You can now create a collection and then query it using natural language. 
+
+### 4.1 Create a collection for the IBM Developer Portal 
+
+Enter a name for the collection, and then enter the urls - 
+```
+http://developer.ibm.com/patterns,http://developer.ibm.com/tutorials,http://developer.ibm.com/article
+```
+![Create collection](images/create_collection.gif)
+
+> Note: The collection configuration is hardcoded in the source file mydiscovery.py. You can modify the configuration based on your needs and re-deploy the application. For more information on configuration please refer this [link](https://cloud.ibm.com/apidocs/discovery#add-configuration).
+Now the collection is created. 
+
+### 4.2 Query the collection
+
+It takes time for the collection to be built. You can now check the status of the collection, and then run your query in `natural language`. 
+
+![Query collection](images/query_collection.gif)
 
 
 ## License
