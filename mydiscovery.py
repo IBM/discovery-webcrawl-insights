@@ -72,6 +72,11 @@ def index():
   environments = discovery.list_environments().get_result();
   logging.warning("Listing environments:")
   logging.warning(json.dumps(environments))
+  logging.warning(len(environments['environments']))
+  if len(environments['environments']) == 1:
+    discovery.create_environment("byod");
+    logging.warning("Created a new environment byod..");
+  environments = discovery.list_environments().get_result();  
   byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
   byod_environment_id = byod_environments[0]['environment_id']
   global environment_id;
@@ -310,7 +315,7 @@ def delete_collection():
                             environment_id,
                             coll["collection_id"]).get_result()
     print(json.dumps(delete_collection, indent=2))
-    configs = discovery.list_configurations('b679a4a8-0d5a-4e6b-9886-56fed40225c8').get_result()
+    configs = discovery.list_configurations(environment_id).get_result()
     configarray = configs["configurations"]
     for config in configarray:
       if config["name"] == "Default Configuration":
