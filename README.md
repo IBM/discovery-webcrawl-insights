@@ -88,6 +88,7 @@ $ ibmcloud cf restage customcollections
 Once the application is deployed and running fine, go to the IBM Cloud Dashboard. 
 
 Click on `Visit App URL` to access the application.
+
 ![Open App](images/open_app.png)
 
 ## 3. Analyze the results
