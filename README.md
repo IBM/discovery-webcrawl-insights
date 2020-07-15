@@ -104,6 +104,7 @@ http://developer.ibm.com/patterns,http://developer.ibm.com/tutorials,http://deve
 Now the collection is created. 
 
 ![Create collection](images/create_collection.gif)
+
 > Note: The collection configuration is hardcoded in the source file mydiscovery.py. You can modify the configuration based on your needs and re-deploy the application. For more information on configuration please refer this [link](https://cloud.ibm.com/apidocs/discovery#add-configuration).
 
 ### Query the collection
