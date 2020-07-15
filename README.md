@@ -95,19 +95,18 @@ Click on `Visit App URL` to access the application.
 
 The application is ready. You can now create a collection and then query it using natural language. 
 
-### Create a collection for the IBM Developer Portal 
+### 4.1 Create a collection for the IBM Developer Portal 
 
 Enter a name for the collection, and then enter the urls - 
 ```
 http://developer.ibm.com/patterns,http://developer.ibm.com/tutorials,http://developer.ibm.com/article
 ```
-Now the collection is created. 
-
 ![Create collection](images/create_collection.gif)
 
 > Note: The collection configuration is hardcoded in the source file mydiscovery.py. You can modify the configuration based on your needs and re-deploy the application. For more information on configuration please refer this [link](https://cloud.ibm.com/apidocs/discovery#add-configuration).
+Now the collection is created. 
 
-### Query the collection
+### 4.2 Query the collection
 
 It takes time for the collection to be built. You can now check the status of the collection, and then run your query in `natural language`. 
 
