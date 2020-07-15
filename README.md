@@ -90,21 +90,19 @@ $ ibmcloud cf restage customcollections
 
 Once the application is deployed and running fine, go to the IBM Cloud Dashboard. 
 
-On the application dashboard, select `Connections`. Click on `Create connection`.
-![Select connections](images/select_create_conn.png)
-
-Choose the `Discovery service` you created earlier.
-![Choose service](images/choose_service.png)
-
-Create the connection. The application must be re-staged after that.
-![Create connection](images/create_connection.png)
-
 Click on `Visit App URL` to access the application.
 ![Open App](images/open_app.png)
 
 ## 4. Analyze the results
 
-You can now go ahead and create a collection. 
+Let us create a collection for the `IBM Developer Portal`. Give a name for the collection, and then enter the urls - `http://developer.ibm.com/patterns,http://developer.ibm.com/tutorials,http://developer.ibm.com/articles`. Now the collection is created. 
+
+![Create collection](images/create_collection.gif)
+> Note: The collection configuration is hardcoded in the source file mydiscovery.py. You can modify the configuration based on your needs and re-deploy the application. For more information on configuration please refer this [link](https://cloud.ibm.com/apidocs/discovery#add-configuration).
+
+It takes time for the collection to be built. You can now check the status of the collection, and then run your query in `natural language`. 
+
+![Query collection](images/query_collection.gif)
 
 
 ## License
