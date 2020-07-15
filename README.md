@@ -5,7 +5,7 @@ There is a lot of information on the web, and we are always interested in gettin
 - We have a question and are searching to find the answers for it that is in the web pages. 
 
 In this code pattern, we try to address a specific scenario where we try to query for relevant information from a group of web pages. 
-[IBM Discovery service](https://cloud.ibm.com/docs/discovery?topic=discovery-about) provides the ability to crawl through web pages and build a queryable collection. We will build an application that uses the APIs of IBM Discovery service to create, query, get status and delete a document collection of web portals. The application renders the query results on a custom built web user interface. This provides flexibility to the end-user to design and build the web user interface for specific information and visualization requirements. 
+[IBM Discovery service](https://cloud.ibm.com/docs/discovery?topic=discovery-about) provides the ability to crawl through web pages and build a queryable collection. We will build an application that uses the APIs of IBM Discovery service to create, query, get status and delete a document collection of web portals. The application renders the query results on a custom built web user interface. This provides flexibility for the end-user to design and build the web user interface to suit specific information and visualization requirements. 
 
 In this application you can:
 - Specify a list of URLs that `Discovery` will crawl to build the collection.
