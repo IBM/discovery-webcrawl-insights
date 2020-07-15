@@ -48,7 +48,7 @@ This will create a folder `discovery-webcrawl-insights`.
 
 ## 2. Deploy the application
 
-### Deploy the application locally
+### 2.1 Deploy the application locally
 
 Click [here](https://cloud.ibm.com/catalog/services/discovery) to create an instance of the `Discovery` service.
 
@@ -74,7 +74,7 @@ python mydiscovery.py
 ```
 The application can be accessed at http://localhost:8000.
 
-### Deploy the application on IBM Cloud
+### 2.2 Deploy the application on IBM Cloud
 
 Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below commands.
 
