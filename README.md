@@ -46,7 +46,7 @@ git clone https://github.com/IBM/discovery-webcrawl-insights
 ```
 This will create a folder `discovery-webcrawl-insights`.
 
-## 3. Deploy the application
+## 2. Deploy the application
 
 ### Deploy the application locally
 
@@ -90,11 +90,11 @@ Once the application is deployed and running fine, go to the IBM Cloud Dashboard
 Click on `Visit App URL` to access the application.
 ![Open App](images/open_app.png)
 
-## 4. Analyze the results
+## 3. Analyze the results
 
 The application is ready. You can now create a collection and then query it using natural language. 
 
-### 4.1 Create a collection for the IBM Developer Portal 
+### 3.1 Create a collection for the IBM Developer Portal 
 
 Enter a name for the collection, and then enter the urls - 
 ```
@@ -105,7 +105,7 @@ http://developer.ibm.com/patterns,http://developer.ibm.com/tutorials,http://deve
 > Note: The collection configuration is hardcoded in the source file mydiscovery.py. You can modify the configuration based on your needs and re-deploy the application. For more information on configuration please refer this [link](https://cloud.ibm.com/apidocs/discovery#add-configuration).
 Now the collection is created. 
 
-### 4.2 Query the collection
+### 3.2 Query the collection
 
 It takes time for the collection to be built. You can now check the status of the collection, and then run your query in `natural language`. 
 
