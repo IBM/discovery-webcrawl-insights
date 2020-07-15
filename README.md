@@ -8,6 +8,7 @@ In this code pattern, we try to address a specific scenario where we try to quer
 [IBM Discovery service](https://cloud.ibm.com/docs/discovery?topic=discovery-about) provides the ability to crawl through web pages and build a queryable collection. We will use this feature to build an application using which you can:
 - Specify a list of URLs that `Discovery` will crawl to build the collection.
 - Specify a query in `natural language` and get relevant results with insights from `Discovery`.
+- Visualize the information
 
 When you have completed this code pattern, you will understand how to:
 - Use the `Discovery` APIs -
