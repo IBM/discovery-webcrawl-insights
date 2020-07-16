@@ -54,14 +54,14 @@ This will create a folder `discovery-webcrawl-insights`.
 
 ### 2.1 Deploy the application locally
 
-#### Create an instance of Discovery service on IBM Cloud
+#### 2.11 Create an instance of Discovery service on IBM Cloud
 Click [here](https://cloud.ibm.com/catalog/services/discovery) to create an instance of the `Discovery` service.
 
 Select a region and pricing plan. Click `Create`.
 
 ![Create Discovery](images/create_discovery.png)
 
-#### Configure service credentials
+#### 2.12 Configure service credentials
 Once the service is provisioned, open the service page and click on `Service credentials`. Click on `Copy` icon to copy the credentials.
 Go to the repo folder `discovery-webcrawl-insights`, edit the file `credentials.json` and replace content with new credentials you copied.
 
