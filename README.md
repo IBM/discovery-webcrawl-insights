@@ -60,7 +60,7 @@ Select a region and pricing plan. Click `Create`.
 
 ![Create Discovery](images/create_discovery.png)
 
->Note: The below step is need if you are deploying the application locally. Skip the below step if you are deploying the application to the cloud.
+>Note: The below step is needed if you are deploying the application locally. Skip the below step if you are deploying the application to the cloud.
 
 Once the service is provisioned, open the service page and click on `Service credentials`. Click on `Copy` icon to copy the credentials.
 Go to the repo folder `discovery-webcrawl-insights`, edit the file `credentials.json` and replace content with new credentials you copied.
