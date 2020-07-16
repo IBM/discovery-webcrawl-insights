@@ -1,7 +1,7 @@
 # Retrieve and visualize relevant information from a collection of web portals with a natural language query using IBM Discovery service
 
 There is a lot of information on the web, and we are always interested in getting the relevant information. The below two common scenarios drive the need for it:
-- There is usually a specific item of interest, and we try to get all the relevant infomration about the item. 
+- There is usually a specific item of interest, and we try to get all the relevant information about the item. 
 - We have a question and are searching to find the answers for it that is in the web pages. 
 
 In this code pattern, we try to address a specific scenario where we try to query for relevant information from a group of web pages. 
