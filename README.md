@@ -84,6 +84,7 @@ The application can be accessed at http://localhost:8000.
 Open a terminal. Go to the repo folder `discovery-webcrawl-insights` and run the below commands.
 
 ```
+$ ibmcloud login
 $ ibmcloud cf create-service discovery lite mydiscoveryservice
 $ ibmcloud cf push
 $ ibmcloud cf bind-service customcollections mydiscoveryservice
