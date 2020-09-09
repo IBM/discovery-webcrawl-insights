@@ -11,6 +11,7 @@ Retrieve and visualize relevant information from a collection of web portals wit
 > Provide names and IBM email addresses.
 
 * Balaji Kadambi <bkadambi@in.ibm.com>
+* Shikha Maheshwari <shikha.mah@in.ibm.com>
 * Manjula G. Hosurmath  <mhosurma@in.ibm.com>
 
 # URLs
