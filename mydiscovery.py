@@ -1,17 +1,20 @@
 from flask import Flask, redirect, request,render_template
 import json
-from ibm_watson import DiscoveryV1
+from ibm_watson import DiscoveryV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import os
 import os.path
 from os import path
 from datetime import datetime
 import logging
+import requests
+from requests.structures import CaseInsensitiveDict
+import base64
 
 
 app = Flask(__name__, template_folder="", static_folder="", static_url_path='')
 collection_id = ""
-environment_id = ""
+project_id = "null"
 apikey = ""
 service_url = ""
 port = int(os.getenv('PORT', 8000))
@@ -35,20 +38,35 @@ logging.warning("in discovery.py...")
 logging.warning("Service URL is "+service_url)
 
 authenticator = IAMAuthenticator(apikey)
-discovery = DiscoveryV1(
-   version='2018-08-01',
+discovery = DiscoveryV2(
+   version='2020-08-30',
    authenticator=authenticator)
 discovery.set_service_url(service_url)
+
+@app_route("/createproject")
+def createproject():
+  discovery.create_project('Example Project', 'document_retrieval');
+  askquery();
 
 @app.route("/askquery")
 def askquery():
   global discovery;
-  environments = discovery.list_environments().get_result();
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
-  global environment_id;
-  environment_id = byod_environment_id;
-  collections = discovery.list_collections(byod_environment_id).get_result()
+  global project_id;
+
+  response = discovery.list_projects();
+  projlist = response.result;
+
+  for prj in projlist:
+    if prj['name'] == 'Example Project':
+      project_id = prj['project_id'];
+
+  if project_id == "null":
+    create_project();
+    for prj in projlist:
+      if prj['name'] == 'Example Project':
+        project_id = prj['project_id'];
+
+  collections = discovery.list_collections(project_id).result;
   msgs = {}
   now = datetime.now()
 
@@ -68,36 +86,7 @@ def askquery():
 
 @app.route('/')
 def index():
-  global discovery;
-  environments = discovery.list_environments().get_result();
-  logging.warning("Listing environments:")
-  logging.warning(json.dumps(environments))
-  logging.warning(len(environments['environments']))
-  if len(environments['environments']) == 1:
-    discovery.create_environment("byod");
-    logging.warning("Created a new environment byod..");
-  environments = discovery.list_environments().get_result();  
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
-  global environment_id;
-  environment_id = byod_environment_id;
-  collections = discovery.list_collections(byod_environment_id).get_result()
-  msgs = {}
-  now = datetime.now()
-
-  if len(collections["collections"]) == 0:
-    msgs['title'] = "No collection found!"
-    msgs['subtitle'] = "Create a new collection."
-    now = datetime.now()
-  else:
-    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-    msgs['time'] = dt_string
-    msgs['title'] = "Collection - " + collections["collections"][0]["name"]
-    msgs['subtitle'] = "Query this collection, get status or delete the collection"
-
-  dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
-  msgs['time'] = dt_string
-  return render_template("query.html", results={}, search="Enter a new search...", msg=msgs)
+  ask_query();
 
 # If you have additional modules that contain your API endpoints, for instance
 # using Blueprints, then ensure that you use relative imports, e.g.:
@@ -110,16 +99,16 @@ def get_results():
     query = request.form.get('search');
   elif request.method == 'GET':
     query = request.args.get('search');
-  global environment_id;
 
-  environments = discovery.list_environments().get_result();
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
+  global project_id;
 
-  environment_id = byod_environment_id;
-  collections = discovery.list_collections(byod_environment_id).get_result()
+  for prj in projlist:
+      if prj['name'] == 'Example Project':
+          project_id = prj['project_id'];
+
+  collections = discovery.list_collections(project_id).result
   print(collections)
-  byod_collections = [x for x in collections['collections']]
+
   global collection_id;
 
   msgs = {}
@@ -136,12 +125,9 @@ def get_results():
     msgs['subtitle'] = "Query this collection, get status or delete the collection..."
     collection_id = byod_collections[0]["collection_id"]
     query_results = discovery.query(
-                    environment_id,
+                    project_id,
                     collection_id,
-                    natural_language_query=query,
-                    count=1000,
-                    highlight="true",
-                    passages="true"
+                    natural_language_query=query
                     ).get_result()
     document_url_map = {};
     allres = query_results["results"];
@@ -155,7 +141,8 @@ def get_results():
 @app.route('/createcollection', methods = ['GET', 'POST'])
 def create_collection():
   urls = "";
-  name = "mycollection"
+  global project_id;
+  name = "examplecollection"
   if request.method == 'POST':
     urls = request.form.get('urls');
     name = request.form.get('name');
@@ -168,92 +155,67 @@ def create_collection():
   for url in urlsplit:
     urlstring = {}
     urlstring["url"] = url;
+    urlstring["maximum_hops"]= 2
+    urlstring["blacklist"]= []
+    urlstring["override_robots_txt"]= true
     urlarray.append(urlstring)
 
   print(urlarray)
   name = '"'+name +'"'
-
-  environments = discovery.list_environments().get_result();
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
-  global environment_id;
-  environment_id = byod_environment_id;
-
-  config_data = """{
-      "name": """ + name +""",
-      "description": "Crawl the code patterns",
-      "conversions": {
-        "html": {
-          "aggressive_cleanup": true,
-          "exclude_tag_attributes": [
-            "style",
-            "class"
-          ],
-          "exclude_tags_completely": [
-            "style",
-            "script",
-            "header",
-            "footer",
-            "meta"
-          ]
-        },
-        "json_normalizations": [
-          {
-            "operation": "remove_nulls"
-          }
-        ]
-      },
-      "enrichments": [
-        {
-          "destination_field": "enriched_text",
-          "enrichment": "natural_language_understanding",
-          "options": {
-            "features": {
-              "categories": {},
-              "concepts": {
-                "limit": 8
-              },
-              "entities": {
-                "emotion": false,
-                "limit": 50,
-                "sentiment": false
-              }
-            }
-          },
-          "source_field": "text"
-        }
-      ],
-      "source": {
-        "options": {
-          "urls": """ + json.dumps(urlarray) + """
-        },
-        "schedule": {
-          "enabled": true,
-          "frequency": "weekly",
-          "time_zone": "America/New_York"
-        },
-        "type": "web_crawl"
-      }
-  }"""
+  keywords_enrichment_id = "";
+  entities_enrichment_id = "";
+  res = discovery.list_enrichments(project_id)
+  enrichments = res.result["enrichments"]
+  keywords_enrichment_id = ""
+  entities_enrichment_id = ""
+  for encr in enrichments:
+      if encr["name"] == "Keywords":
+          keywords_enrichment_id = encr["enrichment_id"];
+      elif encr["name"] == "Entities v2":
+          entities_enrichment_id = encr["enrichment_id"];
 
 
-  data = json.loads(config_data)
-  new_config = discovery.create_configuration(
-            byod_environment_id,
-            data['name'],
-            description=data['description'],
-            conversions=data['conversions'],
-            enrichments=data['enrichments'],
-            source=data['source']).get_result()
-
-  new_config_id = new_config["configuration_id"]
   new_collection = discovery.create_collection(
-        environment_id=byod_environment_id,
-        configuration_id=new_config_id,
+        project_id=project_id,
         name=name,
         description='custom collection',
         language='en').get_result();
   print(json.dumps(new_collection, indent=2));
+
+  apikey_string = "apikey:"+apikey
+  apikey_string_bytes = sample_string.encode("ascii")
+
+  base64_bytes = base64.b64encode(apikey_string_bytes)
+  base64_string = base64_bytes.decode("ascii")
+
+  print(f"Encoded string: {base64_string}")
+  headers = CaseInsensitiveDict()
+  headers["x-watson-discovery-next"] = "true"
+  headers["Content-Type"] = "application/x-www-form-urlencoded"
+  headers["Authorization"] = "Basic "+base64_string
+
+  data = """
+  {
+    "source": {
+      "type" : "web_crawl",
+      "credential_id" : "",
+      "schedule" : {
+        "enabled" : true,
+        "time_zone" : null,
+        "frequency" : "monthly"
+      },
+      "options" : {
+         "urls[": """ + json.dumps(urlarray) + """]
+      }
+    }
+  }
+  """
+
+  global service_url
+  resp = requests.post(service_url, headers=headers, data=data)
+
+  print(resp.status_code)
+
   global collection_id;
   collection_id = new_collection["collection_id"];
   msgs = {}
@@ -266,12 +228,8 @@ def create_collection():
 
 @app.route('/getstatus', methods = ['GET'])
 def get_collection_status():
-  environments = discovery.list_environments().get_result();
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
-  global environment_id;
-  environment_id = byod_environment_id;
-  collections = discovery.list_collections(byod_environment_id).get_result()
+  global project_id;
+  collections = discovery.list_collections(project_id).get_result()
   now = datetime.now()
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
   msgs = {}
@@ -283,7 +241,7 @@ def get_collection_status():
   else:
     coll = collections["collections"][0];
     status = discovery.get_collection(
-                      environment_id,
+                      project_id,
                       coll["collection_id"]).get_result()["document_counts"];
     msgs['title'] = "Status of the collection  - " + coll["name"]
     msgs['subtitle'] = "The number documents available = "+str(status["available"]) + ", processing = "+str(status["processing"])+", and failed ="+str(status["failed"])+". Query this collection, get the status or delete the collection..."
@@ -293,12 +251,8 @@ def get_collection_status():
 
 @app.route('/deletecollections', methods=['GET'])
 def delete_collection():
-  environments = discovery.list_environments().get_result();
-  byod_environments = [x for x in environments['environments'] if x['name'] == 'byod']
-  byod_environment_id = byod_environments[0]['environment_id']
-  global environment_id;
-  environment_id = byod_environment_id;
-  collections = discovery.list_collections(byod_environment_id).get_result()
+  global project_id;
+  collections = discovery.list_collections(project_id).get_result()
 
   msgs = {}
   now = datetime.now()
@@ -312,17 +266,9 @@ def delete_collection():
   else:
     coll = collections["collections"][0];
     delete_collection = discovery.delete_collection(
-                            environment_id,
+                            project_id,
                             coll["collection_id"]).get_result()
     print(json.dumps(delete_collection, indent=2))
-    configs = discovery.list_configurations(environment_id).get_result()
-    configarray = configs["configurations"]
-    for config in configarray:
-      if config["name"] == "Default Configuration":
-          print("Skipping default configuration!")
-      else:
-          config_delete = discovery.delete_configuration(environment_id, config["configuration_id"]).get_result()
-          print(json.dumps(config_delete, indent=2))
     msgs['title'] = "Deleted Collection - " + coll["name"]
     msgs['subtitle'] = "Create a collection, query, get status of an existing collection..."
     return render_template("query.html", results="query", search="Search", msg=msgs)
