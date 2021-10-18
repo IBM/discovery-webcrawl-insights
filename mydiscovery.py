@@ -43,10 +43,10 @@ discovery = DiscoveryV2(
    authenticator=authenticator)
 discovery.set_service_url(service_url)
 
-@app_route("/createproject")
+@app.route("/createproject")
 def createproject():
   discovery.create_project('Example Project', 'document_retrieval');
-  askquery();
+  logging.warning("Created project successfully!");
 
 @app.route("/askquery")
 def askquery():
@@ -55,17 +55,21 @@ def askquery():
 
   response = discovery.list_projects();
   projlist = response.result;
+  logging.warning("Project ID is " + project_id);
 
-  for prj in projlist:
+  for prj in projlist["projects"]:
     if prj['name'] == 'Example Project':
       project_id = prj['project_id'];
 
+  logging.warning("Project ID is "+ project_id);
   if project_id == "null":
-    create_project();
-    for prj in projlist:
+    logging.info("Creating the project Example...")
+    createproject();
+    for prj in projlist["projects"]:
+      print(prj)
       if prj['name'] == 'Example Project':
         project_id = prj['project_id'];
-
+  logging.warning("Project ID is " + project_id);
   collections = discovery.list_collections(project_id).result;
   msgs = {}
   now = datetime.now()
@@ -82,11 +86,12 @@ def askquery():
 
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
   msgs['time'] = dt_string
+  logging.warning("Rendering the web page..")
   return render_template("query.html", results={}, search="Enter a new search...", msg=msgs)
 
 @app.route('/')
 def index():
-  ask_query();
+  return askquery();
 
 # If you have additional modules that contain your API endpoints, for instance
 # using Blueprints, then ensure that you use relative imports, e.g.:
@@ -102,14 +107,17 @@ def get_results():
 
   global project_id;
 
-  for prj in projlist:
+  response = discovery.list_projects();
+  projlist = response.result;
+  for prj in projlist["projects"]:
       if prj['name'] == 'Example Project':
           project_id = prj['project_id'];
 
-  collections = discovery.list_collections(project_id).result
+  collections = discovery.list_collections(project_id).result;
   print(collections)
 
   global collection_id;
+  collection_id = collections["collections"][0]["collection_id"];
 
   msgs = {}
   now = datetime.now()
@@ -123,16 +131,20 @@ def get_results():
   else:
     msgs['title'] = "Collection - " + collections["collections"][0]["name"]
     msgs['subtitle'] = "Query this collection, get status or delete the collection..."
-    collection_id = byod_collections[0]["collection_id"]
-    query_results = discovery.query(
-                    project_id,
-                    collection_id,
-                    natural_language_query=query
-                    ).get_result()
+    collection_id = ["collection_id"]
+    query_results = discovery.query(project_id="152aab65-6006-4329-8ff4-ed3a7018cd68",
+                    collection_ids=["9e302195-7391-3044-0000-017c6012a84d"],
+                    highlight="true",
+                    natural_language_query="kubernetes").get_result();
+    # query_results = discovery.query(
+   #                project_id,
+    #             [collection_id],
+   #            natural_language_query=query
+    #                ).get_result()
     document_url_map = {};
     allres = query_results["results"];
     for res in allres:
-      document_url_map[res["id"]] = res["metadata"]["source"]["url"];
+      document_url_map[res["document_id"]] = res["metadata"]["source"]["url"];
 
     query_results["documenturlmap"] = document_url_map;
     results=json.dumps(query_results, indent=2);
@@ -142,6 +154,12 @@ def get_results():
 def create_collection():
   urls = "";
   global project_id;
+  response = discovery.list_projects();
+  projlist = response.result;
+  for prj in projlist["projects"]:
+    if prj['name'] == 'Example Project':
+      project_id = prj['project_id'];
+
   name = "examplecollection"
   if request.method == 'POST':
     urls = request.form.get('urls');
@@ -157,7 +175,7 @@ def create_collection():
     urlstring["url"] = url;
     urlstring["maximum_hops"]= 2
     urlstring["blacklist"]= []
-    urlstring["override_robots_txt"]= true
+    urlstring["override_robots_txt"]= "true";
     urlarray.append(urlstring)
 
   print(urlarray)
@@ -183,7 +201,7 @@ def create_collection():
   print(json.dumps(new_collection, indent=2));
 
   apikey_string = "apikey:"+apikey
-  apikey_string_bytes = sample_string.encode("ascii")
+  apikey_string_bytes = apikey_string.encode("ascii")
 
   base64_bytes = base64.b64encode(apikey_string_bytes)
   base64_string = base64_bytes.decode("ascii")
@@ -229,7 +247,13 @@ def create_collection():
 @app.route('/getstatus', methods = ['GET'])
 def get_collection_status():
   global project_id;
+  response = discovery.list_projects();
+  projlist = response.result;
+  for prj in projlist["projects"]:
+    if prj['name'] == 'Example Project':
+      project_id = prj['project_id'];
   collections = discovery.list_collections(project_id).get_result()
+  logging.warning(collections);
   now = datetime.now()
   dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
   msgs = {}
@@ -240,6 +264,9 @@ def get_collection_status():
     return render_template('query.html', results={}, search="Enter a new search...", msg=msgs)
   else:
     coll = collections["collections"][0];
+    print(discovery.get_collection(
+                      project_id,
+                      coll["collection_id"]).get_result());
     status = discovery.get_collection(
                       project_id,
                       coll["collection_id"]).get_result()["document_counts"];
